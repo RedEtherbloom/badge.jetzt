@@ -12,6 +12,7 @@ void button_test();
 int choice;
 
 void setup() {
+    // Note: Serial is broken on current badge iteration
     Serial.begin(115200);
     Serial.println("badge.jetzt");
 
@@ -38,21 +39,21 @@ void setup() {
     // Workaround due to weird print and println shifts
     display::println("Selected: " + String(options[choice]));
     display::println("");
-    display::println("Waiting for 2 seconds");
+    display::println("Waiting for 1 second");
     display::display();
-    delay(2000);
+    delay(1000);
 }
 
 
 void loop() {
-    display::clearDisplay();
+    Serial.println("loop.jetzt");
 
     switch (choice) {
         case 0:
             button_test();
         break;
         case 1:
-            mandelbrot::print_mandelbrot_set();
+            mandelbrot::main();
         break;
         case 2:
             menusystem::launch();
