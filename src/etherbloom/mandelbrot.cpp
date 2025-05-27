@@ -11,7 +11,7 @@ namespace mandelbrot {
   // Max iterations of mandelbrot set to check
   const size_t DEFAULT_MAX_ITER = 20;
   // Number of milliseconds to keep coord mode active
-  const size_t COORD_MODE_MIN_ACTIVE = 200;
+  const size_t COORD_MODE_MIN_ACTIVE = 500;
   // Will evaluate to 3.
   const float DIVERGENCE_CUTOFF = 2;
   const float MANDELBROT_MAX_X = 2;
@@ -31,6 +31,7 @@ namespace mandelbrot {
   size_t iter = DEFAULT_MAX_ITER;
   bool printCoordMode = false;
   bool drawTimeLed = false;
+  unsigned long microForDraw = 0;
   bool needRedraw = true;
   unsigned long coordModeActive = 0;
 
@@ -65,6 +66,7 @@ namespace mandelbrot {
 
     if (drawTimeLed) {
       led::set_l(0, 5, 5);
+      microForDraw = micros();
     }
     Serial.println("min_x: " + String(min_x) + " max_x: " + String(max_x) + "min_y: " + String(min_y) + " max_y: " + String(max_y) + " max_iter: " + String(max_iter));
 
@@ -92,7 +94,8 @@ namespace mandelbrot {
 
     if (drawTimeLed) {
       led::set_l(0, 0, 0);
-    }
+      microForDraw = micros() - microForDraw;
+    } 
   }
 
   void main() {
@@ -169,6 +172,9 @@ namespace mandelbrot {
       display::println("Z: " + String(zoom) + " I: " + String(iter));
       display::println("X: " + String(middle.real()) + " Y: " + String(middle.imag()));
       display::println("LED Render: " + String(drawTimeLed));
+      if (drawTimeLed) {
+        display::println("Draw time: " + String(microForDraw));
+      }
       display::display();
     } else if (needRedraw) {
       display::clearDisplay();
